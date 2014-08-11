@@ -71,7 +71,7 @@ defmodule Mustache.Tokenizer do
       var == :. ->
         tokenize(rest, tags, new_line, new_line, [], [{ :unescaped_dot, line, var } | acc])
       to_string(var) =~ ~r/^\w+(\.\w+)+$/ ->
-        atoms = to_string(var) |> String.split(".") |> Enum.map(&binary_to_atom(&1))
+        atoms = to_string(var) |> String.split(".") |> Enum.map(&String.to_atom(&1))
         tokenize(rest, tags, new_line, new_line, [], [{ :unescaped_dotted_name, line, atoms } | acc])
       true ->
         tokenize(rest, tags, new_line, new_line, [], [{ :unescaped_variable, line, var } | acc])
@@ -97,7 +97,7 @@ defmodule Mustache.Tokenizer do
       var == :. ->
         tokenize(rest, tags, new_line, new_line, [], [{ :unescaped_dot, line, var } | acc])
       to_string(var) =~ ~r/^\w+(\.\w+)+$/ ->
-        atoms = to_string(var) |> String.split(".") |> Enum.map(&binary_to_atom(&1))
+        atoms = to_string(var) |> String.split(".") |> Enum.map(&String.to_atom(&1))
         tokenize(rest, tags, new_line, new_line, [], [{ :unescaped_dotted_name, line, atoms } | acc])
       true ->
         tokenize(rest, tags, new_line, new_line, [], [{ :unescaped_variable, line, var } | acc])
@@ -113,7 +113,7 @@ defmodule Mustache.Tokenizer do
     maybe_line_break = if line_break_flg, do: [:line_break], else: []
 
     if to_string(var) =~ ~r/^\w+(\.\w+)+$/ do
-      atoms = to_string(var) |> String.split(".") |> Enum.map(&binary_to_atom(&1))
+      atoms = to_string(var) |> String.split(".") |> Enum.map(&String.to_atom(&1))
       tokenize(rest, tags, new_line, new_line, [], maybe_line_break ++ [{ :dotted_name_section, line, atoms } | acc])
     else
       tokenize(rest, tags, new_line, new_line, [], maybe_line_break ++ [{ :section, line, var } | acc])
@@ -129,7 +129,7 @@ defmodule Mustache.Tokenizer do
     maybe_line_break = if line_break_flg, do: [:line_break], else: []
 
     if to_string(var) =~ ~r/^\w+(\.\w+)+$/ do
-      atoms = to_string(var) |> String.split(".") |> Enum.map(&binary_to_atom(&1))
+      atoms = to_string(var) |> String.split(".") |> Enum.map(&String.to_atom(&1))
       tokenize(rest, tags, new_line, new_line, [], maybe_line_break ++ [{ :dotted_name_inverted_section, line, atoms } | acc])
     else
       tokenize(rest, tags, new_line, new_line, [], maybe_line_break ++ [{ :inverted_section, line, var } | acc])
@@ -145,7 +145,7 @@ defmodule Mustache.Tokenizer do
     maybe_line_break = if line_break_flg, do: [:line_break], else: []
 
     if to_string(var) =~ ~r/^\w+(\.\w+)+$/ do
-      atoms = to_string(var) |> String.split(".") |> Enum.map(&binary_to_atom(&1))
+      atoms = to_string(var) |> String.split(".") |> Enum.map(&String.to_atom(&1))
       tokenize(rest, tags, new_line, new_line, [], maybe_line_break ++ [{ :end_section, line, atoms } | acc])
     else
       tokenize(rest, tags, new_line, new_line, [], maybe_line_break ++ [{ :end_section, line, var } | acc])
@@ -172,7 +172,7 @@ defmodule Mustache.Tokenizer do
       var == :. ->
         tokenize(rest, tags, new_line, new_line, [], [{ :dot, line, var } | acc])
       to_string(var) =~ ~r/^\w+(\.\w+)+$/ ->
-        atoms = to_string(var) |> String.split(".") |> Enum.map(&binary_to_atom(&1))
+        atoms = to_string(var) |> String.split(".") |> Enum.map(&String.to_atom(&1))
         tokenize(rest, tags, new_line, new_line, [], [{ :dotted_name, line, atoms } | acc])
       true ->
         tokenize(rest, tags, new_line, new_line, [], [{ :variable, line, var } | acc])
@@ -242,13 +242,13 @@ defmodule Mustache.Tokenizer do
           _ when buffer == [] ->
             raise SyntaxError, line: line, description: "No contents in tag"
           [?\r,?\n|t] when ignore_break_flg ->
-            { buffer |> Enum.reverse |> list_to_atom, line, t, true }
+            { buffer |> Enum.reverse |> List.to_atom, line, t, true }
           [?\n|t] when ignore_break_flg ->
-            { buffer |> Enum.reverse |> list_to_atom, line, t, true }
+            { buffer |> Enum.reverse |> List.to_atom, line, t, true }
           [] when ignore_break_flg ->
-            { buffer |> Enum.reverse |> list_to_atom, line, '', true }
+            { buffer |> Enum.reverse |> List.to_atom, line, '', true }
           t ->
-            { buffer |> Enum.reverse |> list_to_atom, line, t, false }
+            { buffer |> Enum.reverse |> List.to_atom, line, t, false }
         end
       _ ->
         case string do
